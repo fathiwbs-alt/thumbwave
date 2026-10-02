@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ThumbWave — Thumbnails that make waves in the feed.</title>
+<meta name="description" content="ThumbWave is a done-for-you YouTube thumbnail studio. Three distinct 1280×720 concepts built from your brief — full-res PNGs plus a preview sheet, delivered in your Whop chat. One-time purchase.">
+<meta name="theme-color" content="#071022">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%23071022'/%3E%3Crect x='10' y='10' width='22' height='22' rx='6' fill='none' stroke='%23FFB020' stroke-width='3.5'/%3E%3Crect x='7' y='7' width='22' height='22' rx='6' fill='none' stroke='%233D7BFF' stroke-width='3.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#071022;
+    --panel:#0B1730;
+    --panel-2:#0E1B38;
+    --lime:#3D7BFF;
+    --lime-soft:#8FB3FF;
+    --coral:#FFB020;
+    --text:#FFFFFF;
+    --muted:#B9C1CC;
+    --faint:#828C99;
+    --line:rgba(255,255,255,.10);
+    --line-strong:rgba(255,255,255,.20);
+    --display:"Archivo Black","Arial Black","Segoe UI",-apple-system,sans-serif;
+    --sans:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background-color:var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(62rem 40rem at 92% -12%, rgba(61,123,255,.11), transparent 60%),
+      radial-gradient(48rem 32rem at -10% 30%, rgba(255,176,32,.10), transparent 58%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.022) 0 2px, transparent 2px 15px);
+    background-attachment:fixed,fixed,scroll;
+  }
+  ::selection{background:rgba(61,123,255,.45);color:#FFFFFF}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+  h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spacing:-.01em}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--lime)}
+  .kicker.coral{color:var(--coral)}
+
+  /* ---------- header ---------- */
+  header.site{position:sticky;top:0;z-index:60;background:rgba(11,13,16,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:24px;height:72px}
+  .logo{display:inline-flex;align-items:center;gap:11px;font-family:var(--display);font-size:21px;letter-spacing:.005em}
+  .logo svg{display:block;flex:none}
+  .logo .frm{color:var(--lime)}
+  .nav-links{display:flex;gap:30px;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .nav-links a{transition:color .15s}
+  .nav-links a:hover{color:var(--lime)}
+
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:16px 26px;border-radius:12px;border:1px solid transparent;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s,color .18s,background .18s;white-space:nowrap}
+  .btn-primary{background:var(--lime);color:#FFFFFF;box-shadow:0 14px 38px -14px rgba(61,123,255,.75)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 20px 48px -16px rgba(61,123,255,.95)}
+  .btn-ghost{border-color:var(--line-strong);color:var(--text)}
+  .btn-ghost:hover{border-color:rgba(255,176,32,.75);color:var(--coral)}
+  .btn-sm{padding:11px 18px;font-size:12px;border-radius:10px}
+  .btn-block{width:100%}
+
+  /* ---------- hero ---------- */
+  .hero{padding:106px 0 92px;position:relative;overflow:hidden}
+  .hero .kicker{display:inline-block;margin-bottom:26px}
+  .hero h1{font-size:clamp(44px,7.6vw,88px);max-width:15ch;text-transform:uppercase;line-height:.98}
+  .hero h1 .hl{color:var(--lime);text-shadow:0 0 34px rgba(61,123,255,.45)}
+  .hero h1 .hl2{color:var(--coral);text-shadow:0 0 34px rgba(255,176,32,.45)}
+  .hero .lede{margin-top:28px;max-width:60ch;color:var(--muted);font-size:18px}
+  .hero .lede b{color:var(--text)}
+  .hero-cta{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:52px}
+  .chip{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:9px 16px;background:rgba(21,27,34,.64)}
+  .chip b{color:var(--lime);font-weight:600}
+  .stamp{position:absolute;top:96px;right:6px;transform:rotate(-7deg);border:2px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:12px 18px;border-radius:4px;box-shadow:0 0 0 4px rgba(255,176,32,.14),0 0 34px rgba(255,176,32,.35);background:rgba(11,13,16,.6)}
+  @media (max-width:900px){.stamp{display:none}}
+
+  /* ---------- sections ---------- */
+  section{padding:90px 0;border-top:1px solid var(--line)}
+  .sec-head{max-width:66ch;margin-bottom:54px}
+  .sec-head h2{font-size:clamp(30px,4.8vw,50px);margin-top:18px;text-transform:uppercase}
+  .sec-head p.sec-lede{margin-top:18px;color:var(--muted)}
+
+  /* ---------- inside cards ---------- */
+  .grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:linear-gradient(180deg,var(--panel),rgba(16,20,26,.52));border:1px solid var(--line);border-radius:16px;padding:28px 26px 26px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
+  .card:hover{border-color:rgba(61,123,255,.6);transform:translateY(-3px)}
+  .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--lime),var(--coral));opacity:0;transition:opacity .2s}
+  .card:hover::after{opacity:1}
+  .card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
+  .card h3{font-size:21px;margin:14px 0 8px;text-transform:uppercase;letter-spacing:.01em}
+  .card .dim{font-family:var(--mono);font-size:12.5px;color:var(--faint);letter-spacing:.05em}
+  .card p{margin-top:14px;color:var(--muted);font-size:14.5px}
+
+  /* ---------- steps ---------- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .step{border:1px solid var(--line);border-radius:16px;padding:30px 26px;background:rgba(16,20,26,.46)}
+  .step .num{font-family:var(--display);font-size:54px;line-height:1;color:transparent;-webkit-text-stroke:2px var(--lime)}
+  .step:nth-child(2) .num{-webkit-text-stroke:2px var(--coral)}
+  .step h3{font-size:20px;margin:18px 0 12px;text-transform:uppercase}
+  .step p{color:var(--muted);font-size:14.5px}
+
+  /* ---------- pricing ---------- */
+  .pricing{display:grid;grid-template-columns:1fr 430px;gap:60px;align-items:center}
+  .pricing h2{font-size:clamp(30px,4.8vw,50px);margin-top:18px;text-transform:uppercase}
+  .pricing .p-lede{margin-top:20px;color:var(--muted);max-width:54ch}
+  .price-card{background:linear-gradient(180deg,var(--panel-2),rgba(61,123,255,.09));border:1px solid rgba(61,123,255,.5);border-radius:20px;padding:36px 34px;box-shadow:0 34px 90px -46px rgba(61,123,255,.55)}
+  .plan-name{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:20px}
+  .price{font-family:var(--display);font-size:56px;line-height:1;letter-spacing:-.01em}
+  .price small{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--muted);margin-left:8px}
+  ul.checks{list-style:none;margin:28px 0 30px;display:grid;gap:14px}
+  ul.checks li{padding-left:32px;position:relative;font-size:15px}
+  ul.checks li::before{content:"✓";position:absolute;left:0;top:0;color:var(--lime);font-family:var(--mono);font-weight:700}
+  .price-note{margin-top:16px;color:var(--faint);font-size:12.5px;font-family:var(--mono);line-height:1.7}
+
+  /* ---------- faq ---------- */
+  .faq{display:grid;gap:12px;max-width:860px}
+  details{border:1px solid var(--line);border-radius:14px;background:rgba(16,20,26,.46);overflow:hidden}
+  details[open]{border-color:rgba(61,123,255,.5)}
+  summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 24px;font-weight:600;font-size:16px}
+  summary::-webkit-details-marker{display:none}
+  summary .plus{font-family:var(--mono);color:var(--lime);font-size:20px;line-height:1;transition:transform .2s;flex:none}
+  details[open] summary .plus{transform:rotate(45deg);color:var(--coral)}
+  details .a{padding:0 24px 22px;color:var(--muted);font-size:14.5px;max-width:72ch}
+  details .a ul{margin:10px 0 0 2px;padding-left:18px;display:grid;gap:6px}
+  code{font-family:var(--mono);font-size:.92em;background:rgba(61,123,255,.12);color:var(--lime-soft);border:1px solid rgba(61,123,255,.25);border-radius:6px;padding:1px 7px}
+
+  /* ---------- footer ---------- */
+  footer.site{border-top:1px solid var(--line);padding:56px 0 64px;background:rgba(16,20,26,.5)}
+  .foot{display:flex;align-items:flex-start;justify-content:space-between;gap:30px;flex-wrap:wrap}
+  .foot .copy{color:var(--faint);font-size:13px;max-width:52ch;margin-top:14px}
+  .foot .copy b{color:var(--muted)}
+
+  @media (max-width:980px){
+    .grid6{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:1fr}
+    .pricing{grid-template-columns:1fr;gap:40px}
+  }
+  @media (max-width:640px){
+    .grid6{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .hero{padding:76px 0 64px}
+    .hero-cta .btn{width:100%}
+    section{padding:70px 0}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="ThumbWave home">
+      <svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M11 7 H7 V33 H11" fill="none" stroke="#3D7BFF" stroke-width="4.5"/>
+        <path d="M29 7 H33 V33 H29" fill="none" stroke="#FFB020" stroke-width="4.5"/>
+        <path d="M20 9.5 L23.6 16.4 L30.5 20 L23.6 23.6 L20 30.5 L16.4 23.6 L9.5 20 L16.4 16.4 Z" fill="#FFFFFF"/>
+      </svg>
+      <span>Thumb<span class="frm">Wave</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#inside">What's inside</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://whop.com/thumbwave">Open the store</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" style="border-top:0">
+    <div class="wrap">
+      <span class="kicker">Done-for-you YouTube thumbnails · one pack, one price</span>
+      <h1>Thumbnails that <span class="hl">make waves</span> in the <span class="hl2">feed.</span></h1>
+      <p class="lede">ThumbWave is a done-for-you thumbnail studio. You send <b>one brief</b> — your channel name, your next video's title or topic, and a few style notes — and <b>three distinct 1280×720 concepts</b> land in your Whop chat as a ZIP: full-res PNGs plus a preview sheet, ready to upload as-is. $200 one-time — grab another pack whenever you need one.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://whop.com/thumbwave">Open the ThumbWave store</a>
+        <a class="btn btn-ghost" href="#inside">See what's inside</a>
+      </div>
+      <div class="chips">
+        <span class="chip"><b>3</b> concepts per pack</span>
+        <span class="chip"><b>1280 × 720</b> full-res PNGs</span>
+        <span class="chip">PNG zip + preview sheet</span>
+        <span class="chip">Revisions within 7 days</span>
+        <span class="chip">Delivered in Whop chat</span>
+        <span class="chip">$200 one-time purchase</span>
+      </div>
+    </div>
+    <div class="stamp">3 concepts<br>one flat price</div>
+  </section>
+
+  <!-- ================= WHAT'S INSIDE ================= -->
+  <section id="inside">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker coral">What's inside every pack</span>
+        <h2>Three concepts. One winner on upload day.</h2>
+        <p class="sec-lede">Every pack is a complete thumbnail session for one video: three genuinely different creative directions, each built at YouTube's exact spec, plus a way to see the whole set in one glance.</p>
+      </div>
+      <div class="grid6">
+        <article class="card">
+          <span class="tag">Thumbnail 01</span>
+          <h3>Bold reaction</h3>
+          <span class="dim">1280 × 720</span>
+          <p>A face-forward, high-emotion frame — big expression, tight crop, colors pushed to the limit. Built to stop a scroll mid-swipe.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Thumbnail 02</span>
+          <h3>Curiosity gap</h3>
+          <span class="dim">1280 × 720</span>
+          <p>Your topic teased but not told: one striking image and an unfinished promise that makes the click feel mandatory.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Thumbnail 03</span>
+          <h3>Clean statement</h3>
+          <span class="dim">1280 × 720</span>
+          <p>Type-led and graphic — the sharpest 3–5 words from your title, bold and uncluttered, readable at any size.</p>
+        </article>
+        <article class="card">
+          <span class="tag">The set</span>
+          <h3>Preview sheet</h3>
+          <span class="dim">1 PNG · all three concepts</span>
+          <p>Compare the whole drop at a glance before you open a single file — see which concept earns the upload.</p>
+        </article>
+        <article class="card">
+          <span class="tag">The files</span>
+          <h3>Full-res PNGs</h3>
+          <span class="dim">Upload-ready · no resizing</span>
+          <p>Every concept ships at full resolution at YouTube's exact thumbnail dimensions. Download, upload, done.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Included</span>
+          <h3>Revisions, 7 days</h3>
+          <span class="dim">Notes within 7 days of delivery</span>
+          <p>If a concept isn't landing, send your notes within 7 days of delivery and we rework it — included with every pack.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">How it works</span>
+        <h2>Brief in. Three concepts out. One flat price.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">01</div>
+          <h3>Buy on Whop</h3>
+          <p>Pick up the ThumbWave pack — $200 one-time — and your customer chat opens on the spot.</p>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <h3>Send your brief</h3>
+          <p>One message in chat: your channel name, your next video's title or topic, and style notes — colors, vibe, references. That's everything we need.</p>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <h3>Get 3 concepts in chat</h3>
+          <p>A new ZIP lands in your Whop chat: three distinct 1280×720 concepts as full-res PNGs plus a preview sheet of the whole pack.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRICING ================= -->
+  <section id="pricing">
+    <div class="wrap pricing">
+      <div>
+        <span class="kicker coral">Pricing</span>
+        <h2>One pack. Three concepts. One flat price.</h2>
+        <p class="p-lede">The <b>ThumbWave Thumbnail Pack</b> is a done-for-you thumbnail set for your channel. One purchase gets you a complete, upload-ready pack — designed around the video you're publishing next. Need thumbnails again? Buy another pack anytime.</p>
+      </div>
+      <div class="price-card">
+        <div class="plan-name">ThumbWave Thumbnail Pack</div>
+        <div class="price">$200<small>one-time</small></div>
+        <ul class="checks">
+          <li>Three distinct thumbnail concepts per pack</li>
+          <li>Full-res 1280 × 720 PNGs — upload-ready</li>
+          <li>Preview sheet of the whole pack</li>
+          <li>Revisions included within 7 days</li>
+          <li>Delivered straight to your Whop chat</li>
+          <li>Buy again anytime — no subscription</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="https://whop.com/thumbwave">Open the ThumbWave store</a>
+        <div class="price-note">Paid securely through Whop. A single one-time payment — no subscription, no renewals.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">FAQ</span>
+        <h2>Questions, answered.</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>What do you need from me to start? <span class="plus">+</span></summary>
+          <div class="a">Your channel name, the title or topic of your next video, and any style notes — colors, mood, references, things you love or want to avoid. One chat message is enough; your pack is built from it.</div>
+        </details>
+        <details>
+          <summary>How is a pack delivered? <span class="plus">+</span></summary>
+          <div class="a">Straight to your Whop chat as a ZIP: the three full-res PNG concepts plus a preview sheet so you can compare the whole set at a glance. Upload the files as-is — every size is already correct.</div>
+        </details>
+        <details>
+          <summary>What size are the thumbnails? <span class="plus">+</span></summary>
+          <div class="a">Every concept ships at <code>1280 × 720</code> — YouTube's exact thumbnail size, at full resolution. No resizing, no reformatting, no edits needed.</div>
+        </details>
+        <details>
+          <summary>Are revisions included? <span class="plus">+</span></summary>
+          <div class="a">Yes. If a concept misses the mark, send your notes within 7 days of delivery and it gets reworked — included with every pack, at no extra charge.</div>
+        </details>
+        <details>
+          <summary>When does my pack land? <span class="plus">+</span></summary>
+          <div class="a">Your pack is designed from the brief you send — typically delivered to your chat within ~3 days. Want thumbnails for another video later? Just buy another pack.</div>
+        </details>
+        <details>
+          <summary>How does buying again work? <span class="plus">+</span></summary>
+          <div class="a">Every purchase is a single one-time pack. When you want thumbnails for another video, buy another pack — nothing renews automatically, and nothing else is charged. Every file you receive is yours to keep.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap foot">
+    <div>
+      <a class="logo" href="#top" aria-label="ThumbWave home">
+        <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M11 7 H7 V33 H11" fill="none" stroke="#3D7BFF" stroke-width="4.5"/>
+          <path d="M29 7 H33 V33 H29" fill="none" stroke="#FFB020" stroke-width="4.5"/>
+          <path d="M20 9.5 L23.6 16.4 L30.5 20 L23.6 23.6 L20 30.5 L16.4 23.6 L9.5 20 L16.4 16.4 Z" fill="#FFFFFF"/>
+        </svg>
+        <span>Thumb<span class="frm">Wave</span></span>
+      </a>
+      <p class="copy">Done-for-you YouTube thumbnails. <b>Three concepts per pack</b>, full-res PNGs plus a preview sheet, delivered in your Whop chat. Paid securely through Whop — a single one-time purchase.</p>
+    </div>
+    <a class="btn btn-primary" href="https://whop.com/thumbwave">Open the ThumbWave store</a>
+  </div>
+</footer>
+
+</body>
+</html>
